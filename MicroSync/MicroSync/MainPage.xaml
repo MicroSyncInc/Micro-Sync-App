@@ -4,11 +4,8 @@
              xmlns:local="clr-namespace:MicroSync"
              x:Class="MicroSync.MainPage">
 
-    <StackLayout>
-        <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
-    </StackLayout>
-
+    <AbsoluteLayout x:Name="Layout">
+        <Label x:Name ="Disp" Text="No Pan!" TranslationX="100" TranslationY="100"></Label>
+    </AbsoluteLayout>
+    
 </ContentPage>

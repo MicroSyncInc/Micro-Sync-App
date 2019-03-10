@@ -12,6 +12,9 @@ namespace MicroSync
         public MainPage()
         {
             InitializeComponent();
+
+            TestControl control = new TestControl(){ BackgroundColor = Color.Purple, disp = Disp };
+            Layout.Children.Add(control);
         }
     }
 }
