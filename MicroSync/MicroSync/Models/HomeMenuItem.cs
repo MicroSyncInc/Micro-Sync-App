@@ -7,7 +7,8 @@ namespace MicroSync.Models
     public enum MenuItemType
     {
         Browse,
-        About
+        About,
+        Build
     }
     public class HomeMenuItem
     {

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MicroSync"
+             xmlns:vm="clr-namespace:MicroSync.ViewModels"
+             x:Class="MicroSync.BuildPage">
+    <local:Container x:Name="Layout"
+                    VerticalOptions="FillAndExpand"
+                    HorizontalOptions="FillAndExpand"
+                     BackgroundColor="Blue">
+    </local:Container>
+</ContentPage>

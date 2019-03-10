@@ -1,78 +1,110 @@
-﻿using MR.Gestures;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 using Xamarin.Forms;
 using System.Diagnostics;
+using SuaveControls.Views;
 
 namespace MicroSync
 {
-    abstract class Control : MR.Gestures.Frame, IPlugin
+    abstract class Control : View, IPlugin
     {
-        public Xamarin.Forms.Label disp { get; set; }
+        public Container parent { get; set; }
         public abstract string Name { get; set; }
         public abstract string ID { get; set; }
         public abstract string Version { get; set; }
         public abstract string Author { get; set; }
-        /*
-        Down- One or more fingers came down onto the touch screen.
-        Up- One or more fingers were lifted from the screen.
-        Tapping- A finger came down and up again but it is not sure yet if this may become a multi tap.
-        Tapped- There was no second tap within 250ms so this was a single tap gesture.
-        DoubleTapped- There have been two Tapping events within 250ms and no more came.
-        LongPressing- A finger came down on the screen and did not move. The finger is still down.
-        LongPressed- The finger was released and the gesture is finished.
-        Panning- A finger came down and is moving on the screen.
-        Panned- The finger left the screen while it was moved slowly or not at all.
-        Swiped- The finger left the screen while it was moved fast.
-        Pinching- Two fingers hit the screen and are moving towards or away from each other.
-        Pinched- The fingers left the screen.
-        Rotating- Two fingers hit the screen and are rotating on the screen.
-        Rotated- The fingers left the screen.
-    */
+        private TapGestureRecognizer SingleTapRecognizer = new TapGestureRecognizer();
+        private TapGestureRecognizer DoubleTapRecognizer = new TapGestureRecognizer() { NumberOfTapsRequired = 2 };
+        private PanGestureRecognizer PanGesture = new PanGestureRecognizer();
         public Control()
         {
-            this.LongPressing += OnHold;
-            this.LongPressed += OnLongPressed;
-            this.Panned += OnPan;
-            this.Panning += OnPanning;
-            this.Rotated += OnRotate;
-            this.Rotating += OnRotating;
+            SingleTapRecognizer.Tapped += (s, e) => OnTap_Super(s, SingleTapRecognizer);
+            DoubleTapRecognizer.Tapped += (s, e) => OnDoubleTap_Super(s, DoubleTapRecognizer);
+            PanGesture.PanUpdated += (s, e) => OnPan_Super(s, e);
+            
+            this.GestureRecognizers.Add(SingleTapRecognizer);
+            this.GestureRecognizers.Add(DoubleTapRecognizer);
+            this.GestureRecognizers.Add(PanGesture);
         }
-        public void SendOverBluetooth() => SendOverBluetooth(JsonConvert.SerializeObject(this));
+
+        #region API Handlers
+            public void SendOverBluetooth() => SendOverBluetooth(JsonConvert.SerializeObject(this));
      
-        public void SendOverBluetooth(string json)
-        {
-
-        }
-        public void OnHold(object sender, LongPressEventArgs e)
-        {
-
-        }
-        public void OnLongPressed(object sender, LongPressEventArgs e)
-        {
-            this.BackgroundColor = Color.Green;
-        }
-        public void OnPan(object sender, PanEventArgs e)
-        {
-        }
-        public void OnPanning(object sender, PanEventArgs e)
-        {
-            Point[] Touches = e.Touches;
-            this.TranslationX = 50;
-            this.TranslationY = 50;
-            disp.Text = "Touches " + e.NumberOfTouches;
-            if (e.NumberOfTouches > 0)
+            public void SendOverBluetooth(string json)
             {
-                double X = Touches[0].X;
-                double Y = Touches[0].Y;
-                //disp.Text = "X: " + X + " Y: " + Y;
-                this.TranslationX = X;
-                this.TranslationY = Y;
+
+            }
+        #endregion 
+
+        #region EventHandlers
+            #region Built_In
+                public void OnPan_Super(object sender, PanUpdatedEventArgs e)
+                {
+                    if (this.parent.Mode == Modes.EditMode)
+                    {
+                        Debug.WriteLine("Pan triggered!");
+                        this.parent.ClearFABS();
+                        switch (e.StatusType)
+                        {
+                            case GestureStatus.Running:
+                                this.TranslationX = this.TranslationX + e.TotalX;
+                                this.TranslationY = this.TranslationY + e.TotalY;
+                                break;
+
+                            case GestureStatus.Completed:
+                                break;
+                        }
+                    }
+                    else if (this.parent.Mode == Modes.PlayMode)
+                    {
+                        OnPan(sender, e);
+                    }
+                }
+                public void OnDoubleTap_Super(object sender, TapGestureRecognizer e)
+        {
+            if (this.parent.Mode == Modes.EditMode)
+            {
+                FAB fab = new FAB();
+                fab.TranslationX = this.TranslationX - (fab.Width / 2);
+                fab.TranslationY = this.TranslationY - (fab.Height / 2);
+                this.parent.ClearFABS();
+                this.parent.Children.Add(fab);
+            }
+            else if (this.parent.Mode == Modes.PlayMode)
+            {
+                OnDoubleTap(sender, e);
             }
         }
-        public void OnRotate(object sender, RotateEventArgs e){}
-        public void OnRotating(object sender, RotateEventArgs e){}
+                public void OnTap_Super(object sender, TapGestureRecognizer e)
+        {
+            if(this.parent.Mode == Modes.EditMode)
+            {
+
+            }else if(this.parent.Mode == Modes.PlayMode)
+            {
+                OnTap(sender, e);
+            }
+        }
+            #endregion
+            #region Customizable
+                public virtual void OnTap(object sender, TapGestureRecognizer e)
+        {
+            Debug.WriteLine("Tap Event Triggered");
+        }
+                public virtual void OnDoubleTap(object sender, TapGestureRecognizer e)
+        {
+            Debug.WriteLine("Double Tap Event Triggered");
+        }
+                public virtual void OnPan(object sender, PanUpdatedEventArgs e)
+        {
+            Debug.WriteLine("Pan Event Triggered");
+        }
+            #endregion
+        #endregion
+
+        #region Unused/Required
+        #endregion
     }
 }

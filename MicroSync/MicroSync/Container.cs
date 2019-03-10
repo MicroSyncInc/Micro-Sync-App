@@ -1,0 +1,43 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+using Xamarin.Forms;
+
+namespace MicroSync
+{
+    public enum Modes
+    {
+        EditMode,
+        PlayMode
+    }
+    class Container : AbsoluteLayout
+    {
+        //private static int NUM_GRIDLINES = 3;
+        TapGestureRecognizer SingleTapRecognizer = new TapGestureRecognizer();
+        public Modes Mode = Modes.EditMode;
+        public Container()
+        {
+            
+            SingleTapRecognizer.Tapped += (s, e) => OnTap(s, SingleTapRecognizer);
+            this.GestureRecognizers.Add(SingleTapRecognizer);
+        }
+
+        private void OnTap(object s, TapGestureRecognizer e)
+        {
+            ClearFABS();
+        }
+
+        public void ClearFABS()
+        {
+            foreach (View v in this.Children)
+            {
+                if (v.GetType().Name == "FAB")
+                {
+                    this.Children.Remove(v);
+                    break;
+                }
+            }
+        }
+    }
+}
