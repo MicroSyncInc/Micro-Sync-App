@@ -4,11 +4,10 @@ using System.Text;
 using Newtonsoft.Json;
 using Xamarin.Forms;
 using System.Diagnostics;
-using SuaveControls.Views;
 
 namespace MicroSync
 {
-    abstract class Control : View, IPlugin
+    public abstract class Control : View, IPlugin
     {
         public Container parent { get; set; }
         public abstract string Name { get; set; }
@@ -38,6 +37,24 @@ namespace MicroSync
             }
         #endregion 
 
+        void CreateFAB()
+        {
+            FABContainer fab = new FABContainer(this);
+            fab.TranslationX = this.TranslationX - (fab.Width / 2);
+            fab.TranslationY = this.TranslationY - (fab.Height / 2);
+            this.parent.ClearFABS();
+            this.parent.Children.Add(fab);
+            //FAB fab = new FAB();
+            //fab.TranslationX = this.TranslationX - (fab.Width / 2);
+            //fab.TranslationY = this.TranslationY - (fab.Height / 2);
+            //this.parent.ClearFABS();
+            //this.parent.Children.Add(fab);
+        }
+
+        public void Destroy()
+        {
+            this.parent.Children.Remove(this);
+        }
         #region EventHandlers
             #region Built_In
                 public void OnPan_Super(object sender, PanUpdatedEventArgs e)
@@ -63,30 +80,27 @@ namespace MicroSync
                     }
                 }
                 public void OnDoubleTap_Super(object sender, TapGestureRecognizer e)
-        {
-            if (this.parent.Mode == Modes.EditMode)
-            {
-                FAB fab = new FAB();
-                fab.TranslationX = this.TranslationX - (fab.Width / 2);
-                fab.TranslationY = this.TranslationY - (fab.Height / 2);
-                this.parent.ClearFABS();
-                this.parent.Children.Add(fab);
-            }
-            else if (this.parent.Mode == Modes.PlayMode)
-            {
-                OnDoubleTap(sender, e);
-            }
-        }
+                {
+                    if (this.parent.Mode == Modes.EditMode)
+                    {
+                        CreateFAB();
+                    }
+                    else if (this.parent.Mode == Modes.PlayMode)
+                    {
+                        OnDoubleTap(sender, e);
+                    }
+                }
                 public void OnTap_Super(object sender, TapGestureRecognizer e)
-        {
-            if(this.parent.Mode == Modes.EditMode)
-            {
-
-            }else if(this.parent.Mode == Modes.PlayMode)
-            {
-                OnTap(sender, e);
-            }
-        }
+                {
+                    if(this.parent.Mode == Modes.EditMode)
+                    {
+                        CreateFAB();
+                    }
+                    else if(this.parent.Mode == Modes.PlayMode)
+                    {
+                        OnTap(sender, e);
+                    }
+                }
             #endregion
             #region Customizable
                 public virtual void OnTap(object sender, TapGestureRecognizer e)

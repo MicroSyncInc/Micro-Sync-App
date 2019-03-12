@@ -15,20 +15,20 @@ namespace MicroSync
         public BuildPage()
         {
             InitializeComponent();
-            Layout.Children.Add(
+            Lay.Children.Add(
                 new TestControl()
                 {
                     BackgroundColor = Color.Red,
                     WidthRequest = 100,
                     HeightRequest = 100,
-                    parent = Layout,
+                    parent = Lay,
                 });
 
-            Layout.BackgroundColor = Color.FromRgb(53, 53, 53);
+            Lay.BackgroundColor = Color.FromRgb(53, 53, 53);
 
             //Layout.Children.Add(new Line(15, 15, 45, 45) { BackgroundColor = Color.Green});
         }
-        private void Switch_Clicked(object sender, EventArgs e)
+        private void Add_Clicked(object sender, EventArgs e)
         {
 
         }

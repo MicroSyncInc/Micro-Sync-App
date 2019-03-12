@@ -11,7 +11,7 @@ namespace MicroSync
         EditMode,
         PlayMode
     }
-    class Container : AbsoluteLayout
+    public class Container : AbsoluteLayout
     {
         //private static int NUM_GRIDLINES = 3;
         TapGestureRecognizer SingleTapRecognizer = new TapGestureRecognizer();
@@ -25,14 +25,18 @@ namespace MicroSync
 
         private void OnTap(object s, TapGestureRecognizer e)
         {
-            ClearFABS();
+            Debug.WriteLine("CLICKED: " + s.GetType().Name);
+            if(s.GetType().Name != "InternalFAB")
+            {
+                ClearFABS();
+            }
         }
 
         public void ClearFABS()
         {
             foreach (View v in this.Children)
             {
-                if (v.GetType().Name == "FAB")
+                if (v.GetType().Name == "FABContainer")
                 {
                     this.Children.Remove(v);
                     break;

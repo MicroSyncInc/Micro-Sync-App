@@ -4,7 +4,16 @@
              xmlns:local="clr-namespace:MicroSync"
              xmlns:vm="clr-namespace:MicroSync.ViewModels"
              x:Class="MicroSync.BuildPage">
-    <local:Container x:Name="Layout"
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Clicked="Add_Clicked">
+            <ToolbarItem.Icon>
+                <OnPlatform x:TypeArguments="FileImageSource">
+                    <On Platform="UWP" Value="add.png"/>
+                </OnPlatform>
+            </ToolbarItem.Icon>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <local:Container x:Name="Lay"
                     VerticalOptions="FillAndExpand"
                     HorizontalOptions="FillAndExpand"
                      BackgroundColor="Blue">

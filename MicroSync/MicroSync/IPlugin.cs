@@ -8,9 +8,7 @@ namespace MicroSync
     {
         string Name { get; set; }
         string ID { get; set; }
-
         string Version { get; set; }
-
         string Author { get; set; }
     }
 }

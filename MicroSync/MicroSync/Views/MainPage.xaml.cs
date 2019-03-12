@@ -18,7 +18,7 @@ namespace MicroSync.Views
 
             //PluginManager.LoadPlugins();
             MasterBehavior = MasterBehavior.Popover;
-            DisplayAlert(Directory.GetCurrentDirectory(), Directory.GetCurrentDirectory(), "Accept", "Cancel");
+
             MenuPages.Add((int)MenuItemType.Browse, (NavigationPage)Detail);
         }
 
